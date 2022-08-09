@@ -35,7 +35,7 @@ async function html() {
         let wind = $(this).find('table > tbody > tr > td:nth-child(2) > div:nth-child(2) > div > div.float-left > img').attr('alt');
         let windDir = "";
         let windSpeed = "";
-        if (wind != undefined) {
+        if (wind != undefined && wind.includes("at")) {
             windDir = wind.match(/(?<=(Winds )).*(?=( at))/)[0];
             windSpeed = wind.match(/(?<=(at )).*/)[0];
         }
@@ -212,46 +212,62 @@ async function access() {
 
     await googleSheets.spreadsheets.values.clear({
         spreadsheetId,
-        range: "Reference!A2:Z"
+        range: "Batter Import!A2:Z"
+    });
+    await googleSheets.spreadsheets.values.clear({
+        spreadsheetId,
+        range: "Game Import!A2:Z"
     });
 
     let JSONdata = html();
     let games = (await JSONdata).games;
 
-    let index = 2;
+    let indexB = 2;
+    let indexG = 2;
 
     games.forEach(async function (game) {
 
         googleSheets.spreadsheets.values.append({
             spreadsheetId,
-            range: `Reference!A${index}:M${index + 19}`,
+            range: `Batter Import!A${indexB}:I${indexB + 19}`,
             valueInputOption: "USER_ENTERED",
             resource: {
                 values: [
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[0].order, game.awayTeam.lineup[0].name, game.awayTeam.lineup[0].handedness, game.awayTeam.lineup[0].position, game.awayTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[1].order, game.awayTeam.lineup[1].name, game.awayTeam.lineup[1].handedness, game.awayTeam.lineup[1].position, game.awayTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[2].order, game.awayTeam.lineup[2].name, game.awayTeam.lineup[2].handedness, game.awayTeam.lineup[2].position, game.awayTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[3].order, game.awayTeam.lineup[3].name, game.awayTeam.lineup[3].handedness, game.awayTeam.lineup[3].position, game.awayTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[4].order, game.awayTeam.lineup[4].name, game.awayTeam.lineup[4].handedness, game.awayTeam.lineup[4].position, game.awayTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[5].order, game.awayTeam.lineup[5].name, game.awayTeam.lineup[5].handedness, game.awayTeam.lineup[5].position, game.awayTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[6].order, game.awayTeam.lineup[6].name, game.awayTeam.lineup[6].handedness, game.awayTeam.lineup[6].position, game.awayTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[7].order, game.awayTeam.lineup[7].name, game.awayTeam.lineup[7].handedness, game.awayTeam.lineup[7].position, game.awayTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[8].order, game.awayTeam.lineup[8].name, game.awayTeam.lineup[8].handedness, game.awayTeam.lineup[8].position, game.awayTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[9].order, game.awayTeam.lineup[9].name, game.awayTeam.lineup[9].handedness, game.awayTeam.lineup[9].position, game.awayTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[0].order, game.homeTeam.lineup[0].name, game.homeTeam.lineup[0].handedness, game.homeTeam.lineup[0].position, game.homeTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[1].order, game.homeTeam.lineup[1].name, game.homeTeam.lineup[1].handedness, game.homeTeam.lineup[1].position, game.homeTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[2].order, game.homeTeam.lineup[2].name, game.homeTeam.lineup[2].handedness, game.homeTeam.lineup[2].position, game.homeTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[3].order, game.homeTeam.lineup[3].name, game.homeTeam.lineup[3].handedness, game.homeTeam.lineup[3].position, game.homeTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[4].order, game.homeTeam.lineup[4].name, game.homeTeam.lineup[4].handedness, game.homeTeam.lineup[4].position, game.homeTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[5].order, game.homeTeam.lineup[5].name, game.homeTeam.lineup[5].handedness, game.homeTeam.lineup[5].position, game.homeTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[6].order, game.homeTeam.lineup[6].name, game.homeTeam.lineup[6].handedness, game.homeTeam.lineup[6].position, game.homeTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[7].order, game.homeTeam.lineup[7].name, game.homeTeam.lineup[7].handedness, game.homeTeam.lineup[7].position, game.homeTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[8].order, game.homeTeam.lineup[8].name, game.homeTeam.lineup[8].handedness, game.homeTeam.lineup[8].position, game.homeTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance],
-                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[9].order, game.homeTeam.lineup[9].name, game.homeTeam.lineup[9].handedness, game.homeTeam.lineup[9].position, game.homeTeam.lineupStatus, game.temperature, game.windDirection, game.windSpeed, game.rainChance]
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[0].order, game.awayTeam.lineup[0].name, game.awayTeam.lineup[0].handedness, game.awayTeam.lineup[0].position, game.awayTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[1].order, game.awayTeam.lineup[1].name, game.awayTeam.lineup[1].handedness, game.awayTeam.lineup[1].position, game.awayTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[2].order, game.awayTeam.lineup[2].name, game.awayTeam.lineup[2].handedness, game.awayTeam.lineup[2].position, game.awayTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[3].order, game.awayTeam.lineup[3].name, game.awayTeam.lineup[3].handedness, game.awayTeam.lineup[3].position, game.awayTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[4].order, game.awayTeam.lineup[4].name, game.awayTeam.lineup[4].handedness, game.awayTeam.lineup[4].position, game.awayTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[5].order, game.awayTeam.lineup[5].name, game.awayTeam.lineup[5].handedness, game.awayTeam.lineup[5].position, game.awayTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[6].order, game.awayTeam.lineup[6].name, game.awayTeam.lineup[6].handedness, game.awayTeam.lineup[6].position, game.awayTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[7].order, game.awayTeam.lineup[7].name, game.awayTeam.lineup[7].handedness, game.awayTeam.lineup[7].position, game.awayTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[8].order, game.awayTeam.lineup[8].name, game.awayTeam.lineup[8].handedness, game.awayTeam.lineup[8].position, game.awayTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.homeTeam.teamAbbr, game.startTime, game.awayTeam.lineup[9].order, game.awayTeam.lineup[9].name, game.awayTeam.lineup[9].handedness, game.awayTeam.lineup[9].position, game.awayTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[0].order, game.homeTeam.lineup[0].name, game.homeTeam.lineup[0].handedness, game.homeTeam.lineup[0].position, game.homeTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[1].order, game.homeTeam.lineup[1].name, game.homeTeam.lineup[1].handedness, game.homeTeam.lineup[1].position, game.homeTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[2].order, game.homeTeam.lineup[2].name, game.homeTeam.lineup[2].handedness, game.homeTeam.lineup[2].position, game.homeTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[3].order, game.homeTeam.lineup[3].name, game.homeTeam.lineup[3].handedness, game.homeTeam.lineup[3].position, game.homeTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[4].order, game.homeTeam.lineup[4].name, game.homeTeam.lineup[4].handedness, game.homeTeam.lineup[4].position, game.homeTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[5].order, game.homeTeam.lineup[5].name, game.homeTeam.lineup[5].handedness, game.homeTeam.lineup[5].position, game.homeTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[6].order, game.homeTeam.lineup[6].name, game.homeTeam.lineup[6].handedness, game.homeTeam.lineup[6].position, game.homeTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[7].order, game.homeTeam.lineup[7].name, game.homeTeam.lineup[7].handedness, game.homeTeam.lineup[7].position, game.homeTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[8].order, game.homeTeam.lineup[8].name, game.homeTeam.lineup[8].handedness, game.homeTeam.lineup[8].position, game.homeTeam.lineupStatus],
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.homeTeam.teamAbbr, game.awayTeam.teamAbbr, game.startTime, game.homeTeam.lineup[9].order, game.homeTeam.lineup[9].name, game.homeTeam.lineup[9].handedness, game.homeTeam.lineup[9].position, game.homeTeam.lineupStatus]
                 ],
             },
         });
-        index += 20;
+        googleSheets.spreadsheets.values.append({
+            spreadsheetId,
+            range: `Game Import!A${indexG}:Z${indexG}`,
+            valueInputOption: "RAW",
+            resource: {
+                values: [
+                    [`${game.awayTeam.teamAbbr} @ ${game.homeTeam.teamAbbr} (${game.startTime})`, game.awayTeam.teamAbbr, game.awayTeam.odds, game.awayTeam.runTotal, game.homeTeam.teamAbbr, game.homeTeam.odds, game.homeTeam.runTotal, game.startTime, game.temperature, game.windDirection, game.windSpeed, game.rainChance, game.rainDistribution[0], game.rainDistribution[1], game.rainDistribution[2], game.rainDistribution[3], game.rainDistribution[4], game.rainDistribution[5], game.rainDistribution[6], game.rainDistribution[7]]
+                ]
+            }
+        });
+        indexB += 20;
+        indexG++;
     });
 }
 
